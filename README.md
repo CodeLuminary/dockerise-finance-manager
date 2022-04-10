@@ -1,1 +1,1 @@
-## dockerise-finance-manager
+## Finance manager with Docker
