@@ -1,0 +1,6 @@
+.nav ul li{display: inline-block}
+.nav ul li a {padding: 10px 15px; text-decoration: none; color: #fff;display:inline-block}
+.nav{
+    background: #29c359;
+    text-align: center
+}
