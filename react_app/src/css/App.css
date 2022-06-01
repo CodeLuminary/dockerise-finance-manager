@@ -4,7 +4,34 @@
 body{
   margin: 0px !important;
   padding: 0px !important;
+  background-color: #f2f2f2;
 }
-html{
-  
+.content{
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  width: 100%;
+}
+.content > div{
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  width: 70%;
+}
+.input, .textarea{
+  height: 40px;
+  width: 100%;
+  border: 1px solid #428bca;
+  border-width: 0px 0px 1px 0px;
+  margin: 5px 0px 15px
+}
+.textarea{
+  height: 80px;
+}
+.btn{
+  margin-top: 40px;
+  width: 100px; height: 40px;
+  border-radius: 10px;
+  background-color: #428bca;
+  color: #fff;
 }
