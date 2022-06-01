@@ -1,0 +1,7 @@
+.label::after{
+    content: '*';
+    color: purple
+}
+.label{
+    display: block;
+}
