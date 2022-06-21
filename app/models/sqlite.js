@@ -5,7 +5,7 @@ const location = "./models/fm.db";
 let db, dbAll, dbRun;
 
 //init()
-seedDb();
+//seedDb();
 
 function init() {
     const dirName = require('path').dirname(location);
@@ -47,6 +47,86 @@ function seedDb(){
     });
 }
 
-module.exports = {
+async function teardown() {
+    return new Promise((acc, rej) => {
+        db.close(err => {
+            if (err) rej(err);
+            else acc();
+        });
+    });
+}
 
+async function getItems() {
+    return new Promise((acc, rej) => {
+        db.all('SELECT * FROM todo_items', (err, rows) => {
+            if (err) return rej(err);
+            acc(
+                rows.map(item =>
+                    Object.assign({}, item, {
+                        completed: item.completed === 1,
+                    }),
+                ),
+            );
+        });
+    });
+}
+
+async function getItem(id) {
+    return new Promise((acc, rej) => {
+        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows) => {
+            if (err) return rej(err);
+            acc(
+                rows.map(item =>
+                    Object.assign({}, item, {
+                        completed: item.completed === 1,
+                    }),
+                )[0],
+            );
+        });
+    });
+}
+
+async function storeItem(item) {
+    return new Promise((acc, rej) => {
+        db.run(
+            'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
+            [item.id, item.name, item.completed ? 1 : 0],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateItem(id, item) {
+    return new Promise((acc, rej) => {
+        db.run(
+            'UPDATE todo_items SET name=?, completed=? WHERE id = ?',
+            [item.name, item.completed ? 1 : 0, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+} 
+
+async function removeItem(id) {
+    return new Promise((acc, rej) => {
+        db.run('DELETE FROM todo_items WHERE id = ?', [id], err => {
+            if (err) return rej(err);
+            acc();
+        });
+    });
+}
+
+module.exports = {
+    init,
+    seedDb,
+    getItems,
+    getItem,
+    storeItem,
+    updateItem,
+    removeItem
 }
