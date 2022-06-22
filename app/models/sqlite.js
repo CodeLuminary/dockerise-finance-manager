@@ -15,36 +15,21 @@ function init() {
     return "database created successfully"
 }
 
-function seedDb(){
-    return new Promise((acc, rej) => {
-        db = new sqlite3.Database(location, err => {
-            if (err) return rej(err);
+async function seedDb(){
+    db = new sqlite3.Database(location);
 
-            let sql = `CREATE TABLE IF NOT EXISTS income_expense (id int, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date datetime, is_recurrent SMALLINT(1), recurrency tinyint, PRIMARY KEY(id))`;
+    let sql = `CREATE TABLE IF NOT EXISTS income_expense (id INT PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date datetime, is_recurrent SMALLINT(1), recurrency tinyint, PRIMARY KEY(id))`;
 
-            db.run(sql, (err, result) => {
-                    if (err) return rej(err);
-                    acc();
-                },
-            );
+    await db.run(sql);
 
-            sql = `CREATE TABLE IF NOT EXISTS asset_liability (id int, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date datetime, change_rate double, change_duration int, PRIMARY KEY(id))`;
+    sql = `CREATE TABLE IF NOT EXISTS asset_liability (id INT PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date datetime, change_rate double, change_duration int, PRIMARY KEY(id))`;
 
-            db.run(sql, (err, result) => {
-                    if (err) return rej(err);
-                    acc();
-                },
-            );
+    await db.run(sql);
 
-            sql = `CREATE TABLE IF NOT EXISTS income_expense (id int, currency VARCHAR(10), name VARCHAR(100), logo VARCHAR(100), location VARCHAR(200), PRIMARY KEY(id))`;
+    sql = `CREATE TABLE IF NOT EXISTS settings (id INT PRIMARY KEY AUTOINCREMENT, currency VARCHAR(10), name VARCHAR(100), logo VARCHAR(100), location VARCHAR(200), PRIMARY KEY(id))`;
 
-            db.run(sql, (err, result) => {
-                    if (err) return rej(err);
-                    acc();
-                },
-            );
-        });
-    });
+    await db.run(sql);
+        
 }
 
 async function teardown() {
@@ -56,9 +41,9 @@ async function teardown() {
     });
 }
 
-async function getItems() {
+async function getItems(table) {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items', (err, rows) => {
+        db.all(`SELECT * FROM ${table}`, (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -71,9 +56,9 @@ async function getItems() {
     });
 }
 
-async function getItem(id) {
+async function getItem(table,id) {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows) => {
+        db.all(`SELECT * FROM ${table} WHERE id=?`, [id], (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -86,11 +71,12 @@ async function getItem(id) {
     });
 }
 
-async function storeItem(item) {
+async function addIncomeExpense(item) {
     return new Promise((acc, rej) => {
+        item.transaction_date = new Date()
         db.run(
-            'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
-            [item.id, item.name, item.completed ? 1 : 0],
+            `INSERT INTO income_expense (type, title, description, amount, is_recurrent, recurrency) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [item.type, item.name, item.completed ? 1 : 0],
             err => {
                 if (err) return rej(err);
                 acc();
@@ -99,11 +85,33 @@ async function storeItem(item) {
     });
 }
 
-async function updateItem(id, item) {
+async function addAssetLiability(item) {
     return new Promise((acc, rej) => {
+        item.transaction_date = new Date()
         db.run(
-            'UPDATE todo_items SET name=?, completed=? WHERE id = ?',
-            [item.name, item.completed ? 1 : 0, id],
+            `INSERT INTO asset_liability (type, title, description, amount, change_rate, change_duration) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [item.type, item.name, item.completed ? 1 : 0],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateSettings(items) {
+    return new Promise((acc, rej) => {
+        let query = `UPDATE settings SET `;
+        let values = [];
+        for(let key in items){
+            query += `${key}=?, `;
+            values.push(items[key])
+        }
+        query = query.slice(0,-2);
+        query += ` WHERE id=1`;
+        db.run(
+            query,
+            values,
             err => {
                 if (err) return rej(err);
                 acc();
@@ -126,7 +134,8 @@ module.exports = {
     seedDb,
     getItems,
     getItem,
-    storeItem,
-    updateItem,
+    addIncomeExpense,
+    addAssetLiability,
+    updateSettings,
     removeItem
 }
