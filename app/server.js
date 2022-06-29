@@ -6,14 +6,19 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-app.post('/add-asset-liability',(req,res)=>{
+const {updateSettings, addAssetLiability, addIncomeExpense} = require('./models/sqlite')
 
+app.post('/add-asset-liability',(req,res)=>{
+    addAssetLiability(req.body)
+    .then(result=>res.send(result));
 })
 app.post('/add-income-expense',(req,res)=>{
-
+    addIncomeExpense(req.body)
+    .then(result=>res.send(result));
 })
 app.post('/settings',(req,res)=>{
-
+    updateSettings(req.body)
+    .then(result=>res.send(result));
 })
 app.post('/get-financial-statement',(req,res)=>{
     

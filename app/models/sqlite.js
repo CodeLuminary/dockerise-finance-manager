@@ -27,8 +27,9 @@ async function seedDb(){
     await db.run(sql);
 
     sql = `CREATE TABLE IF NOT EXISTS settings (id INT PRIMARY KEY AUTOINCREMENT, currency VARCHAR(10), name VARCHAR(100), logo VARCHAR(100), location VARCHAR(200), PRIMARY KEY(id))`;
-
     await db.run(sql);
+
+    await db.run(`INSERT INTO settings (currency, location) VALUES('USD', 'United State of America')`)
         
 }
 
@@ -77,9 +78,12 @@ async function addIncomeExpense(item) {
         db.run(
             `INSERT INTO income_expense (type, title, description, amount, is_recurrent, recurrency) VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [item.type, item.name, item.completed ? 1 : 0],
-            err => {
+            (err, data) => {
                 if (err) return rej(err);
-                acc();
+                acc({
+                    isSuccessful: true,
+                    data
+                });
             },
         );
     });
@@ -91,9 +95,12 @@ async function addAssetLiability(item) {
         db.run(
             `INSERT INTO asset_liability (type, title, description, amount, change_rate, change_duration) VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [item.type, item.name, item.completed ? 1 : 0],
-            err => {
+            (err, data) => {
                 if (err) return rej(err);
-                acc();
+                acc({
+                    isSuccessful: true,
+                    data
+                });
             },
         );
     });
@@ -114,7 +121,9 @@ async function updateSettings(items) {
             values,
             err => {
                 if (err) return rej(err);
-                acc();
+                acc({
+                    isSuccessful: true
+                });
             },
         );
     });
@@ -124,9 +133,17 @@ async function removeItem(id) {
     return new Promise((acc, rej) => {
         db.run('DELETE FROM todo_items WHERE id = ?', [id], err => {
             if (err) return rej(err);
-            acc();
+            acc({
+                isSuccessful: true
+            });
         });
     });
+}
+
+async function getFinancialStatement(userObject){
+    return new Promise((acc,rej)=>{
+        
+    })
 }
 
 module.exports = {
