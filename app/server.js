@@ -16,7 +16,7 @@ app.post('/add-income-expense',(req,res)=>{
     addIncomeExpense(req.body)
     .then(result=>res.send(result));
 })
-app.post('/settings',(req,res)=>{
+app.post('/change-settings',(req,res)=>{
     updateSettings(req.body)
     .then(result=>res.send(result));
 })
