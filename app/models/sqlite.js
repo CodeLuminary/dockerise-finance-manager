@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
+const { resolve } = require('path');
 const location = "./models/fm.db";
 
 let db, dbAll, dbRun;
@@ -140,9 +141,30 @@ async function removeItem(id) {
     });
 }
 
-async function getFinancialStatement(userObject){
+async function getFinancialStatement(dataObject){
     return new Promise((acc,rej)=>{
+        const income_expenses = new Promise((resolve,reject)=>{
+            db.run(`SELECT * FROM income_expense WHERE transaction_date BETWEEN #${dataObject.from}# AND #${dataObject.to}#`, (err, data)=>{
+                if(err) reject(err)
+                else resolve(data)
+            })
+        })
+
+        const asset_liabilities = new Promise((resolve,reject)=>{
+            db.run(`SELECT * FROM asset_liability WHERE transaction_date BETWEEN #${dataObject.from}# AND #${dataObject.to}#`, (err, data)=>{
+                if(err) reject(err)
+                else resolve(data)
+            })
+        })
         
+        Promise.allSettled([income_expenses, asset_liabilities])
+        .then(results=>resolve({
+            isSuccessful: true,
+            data:{
+                income: results[0].value,
+                assets: results[0].value
+            }
+        }))
     })
 }
 
