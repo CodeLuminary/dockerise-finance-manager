@@ -49,7 +49,7 @@ const AssetLiability = ()=>{
             <span className={inc_exp_style.label}>{typeRate} Rate</span>
             <input type="text" onChange={e=>setRate(Number(e.target.value))} placeholder={`Enter rate of ${typeRate} e.g 5 for 5 USD/ month`} className="input"/><br/>
             
-            <input className="btn" value="Save"/>
+            <input type="submit" className="btn" value="Save"/>
         </form>
     )
 }
