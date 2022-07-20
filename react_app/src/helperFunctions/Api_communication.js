@@ -23,3 +23,11 @@ export const AddAssetsLiability = (dataObject)=>{
       else alert("Action failed. Asset/Liability could not be added")
     })
 }
+
+export const getFinancialStatement = (dataObject)=>{
+  return new Promise((resolve, reject)=>{
+    Api.PostApi('/get-financial-statement',dataObject)
+    .then(result=>resolve(result))
+    .catch(error=>reject(error))
+  })
+}
