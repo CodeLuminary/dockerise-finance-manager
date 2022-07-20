@@ -176,5 +176,6 @@ module.exports = {
     addIncomeExpense,
     addAssetLiability,
     updateSettings,
-    removeItem
+    removeItem,
+    getFinancialStatement
 }
