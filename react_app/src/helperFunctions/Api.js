@@ -1,7 +1,7 @@
 class restApi{
     //Set domain name here
     static domain = "";
-    //static domain = "http://localhost:8000"
+    static domain = "http://localhost:5000"
     static domainState = false;
 
     static checkNetwork(){
@@ -9,7 +9,7 @@ class restApi{
         return true;
     }
 
-    static PostApi(url, requestObject, shouldAddAuthorization=false, isDomainUsed=restApi.domainState){      
+    static PostApi(url, requestObject, isDomainUsed=restApi.domainState){      
         if(!isDomainUsed){
             url = restApi.domain + url;
         }
@@ -19,10 +19,7 @@ class restApi{
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
-                headers: shouldAddAuthorization ? {
-                    'Authorization': 'Bearer ' + localStorage.getItem('eduplus_tkn'),
-                    'Content-Type': 'application/json'
-                } : {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestObject)
@@ -32,7 +29,7 @@ class restApi{
             .catch(error=>reject(error))
         }) 
     }
-    static getApi(url,authorizationString=false,isDomainUsed = restApi.domainState){
+    static getApi(url,isDomainUsed = restApi.domainState){
         if(!isDomainUsed){
             url = restApi.domain + url;
         }
@@ -41,10 +38,7 @@ class restApi{
             fetch(url,{
                 method: 'GET',
                 mode: 'cors',
-                cache: 'no-cache',
-                headers: authorizationString && {
-                    'Authorization': 'Bearer ' + localStorage.getItem('eduplus_tkn'),
-                }
+                cache: 'no-cache'
             })
             .then(Response=>Response.json())
             .then(result=> resolve(result))
