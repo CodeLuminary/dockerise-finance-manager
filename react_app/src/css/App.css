@@ -30,9 +30,10 @@ body{
 }
 .btn{
   margin-top: 40px;
-  width: 100px; height: 40px;
+  height: 40px;
   border-radius: 10px;
   background-color: #428bca;
-  color: #fff;
+  color: #fff; padding: 10px;
   border-width: 0px;
+  cursor: pointer;
 }
