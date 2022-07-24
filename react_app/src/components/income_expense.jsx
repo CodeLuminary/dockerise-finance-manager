@@ -39,7 +39,7 @@ const IncomeExpense = ()=>{
             <span className={inc_exp_style.label}>Amount</span>
             <input onChange={e=>setAmount(Number(e.target.value))} type="text" className="input" placeholder="Enter amount"/><br/>
             <span className={inc_exp_style.label}>Date/Time</span>
-            <input on type="datetime-local" onChange={e=>setDateTime(e.target.value)} className="input" />
+            <input on type="date" onChange={e=>setDateTime(e.target.value)} className="input" />
             <span>Is Expenditure Recurrent</span>
             <input type="checkbox" onChange={e=>setIsRecurrent(e.target.checked)}/><br/>
             <div>
