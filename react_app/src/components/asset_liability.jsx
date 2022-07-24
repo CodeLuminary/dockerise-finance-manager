@@ -26,7 +26,7 @@ const AssetLiability = ()=>{
     }
 
     return (
-        <form onsubmit={HandleSubmit}>
+        <form onSubmit={HandleSubmit}>
             <h2>INCOME/EXPENSE</h2>
             <span className={inc_exp_style.label}>Type</span>
             <select className="input" onChange={e=> {
@@ -43,7 +43,7 @@ const AssetLiability = ()=>{
             <span className={inc_exp_style.label}>Amount</span>
             <input type="text" onChange={e=>setAmount(Number(e.target.value))} className="input" placeholder="Enter amount"/><br/>
             <span className={inc_exp_style.label}>Date/Time</span>
-            <input  type="datetime-local" onChange={e=>setDateTime(e.target.value)} className="input" />
+            <input  type="date" onChange={e=>setDateTime(e.target.value)} className="input" />
             <span className={inc_exp_style.label}>{typeRate} Duration(in month)</span>
             <input type="number" onChange={e=>setDuration(Number(e.target.value))} value="1" className="input"/><br/>
             <span className={inc_exp_style.label}>{typeRate} Rate</span>
