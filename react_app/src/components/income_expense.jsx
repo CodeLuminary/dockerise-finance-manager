@@ -33,7 +33,7 @@ const IncomeExpense = ()=>{
                 <option value="income">Income</option>
             </select><br/>
             <span className={inc_exp_style.label}>Expenditure title/name</span>
-            <input onChange={e=>setTitle(e.target.value)} type="text" className="input" placeholder="Enter expenditure name"/><br/>
+            <input onChange={e=>setTitle(e.target.value.trim().toLocaleLowerCase())} type="text" className="input" placeholder="Enter expenditure name"/><br/>
             <span className={inc_exp_style.label}>Expenditure description</span>
             <textarea onChange={e=>setDescription(e.target.value)} className="textarea"></textarea><br/>
             <span className={inc_exp_style.label}>Amount</span>
