@@ -19,11 +19,11 @@ function init() {
 async function seedDb(){
     //db = new sqlite3.Database(location);
 
-    let sql = `CREATE TABLE IF NOT EXISTS income_expense (id INTEGER PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date int, is_recurrent SMALLINT(1), recurrency tinyint)`;
+    let sql = `CREATE TABLE IF NOT EXISTS income_expense (id INTEGER PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date bigint, is_recurrent SMALLINT(1), recurrency tinyint)`;
 
     await db.run(sql);
 
-    sql = `CREATE TABLE IF NOT EXISTS asset_liability (id INTEGER PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date int, change_rate double, change_duration int)`;
+    sql = `CREATE TABLE IF NOT EXISTS asset_liability (id INTEGER PRIMARY KEY AUTOINCREMENT, type SMALLINT(1), title VARCHAR(100), description TEXT, amount double, transaction_date bigint, change_rate double, change_duration int)`;
 
     await db.run(sql);
 
@@ -75,15 +75,16 @@ async function getItem(table,id) {
 }
 
 async function addIncomeExpense(item) {
-    console.log(Date.parse(item.transaction_date), 'number value');
-    console.log(item.transaction_date, 'main date')
+    //console.log(Date.parse(item.transaction_date), 'number value');
+    //console.log(item.transaction_date, 'main date')
     item.transaction_date = Date.parse(item.transaction_date);
-    console.log(Number(item.transaction_date), "trans date");
+    item.date = Number(item.transaction_date.toString());
+    //console.log(Number(item.transaction_date.toString()), "trans date");
     return new Promise((acc, rej) => {
         item.transaction_date = new Date()
         db.run(
             `INSERT INTO income_expense (type, title, description, amount, is_recurrent, recurrency, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [item.type, item.title, item.description, item.amount, item.is_recurrent, item.recurrency, item.transaction_date ],
+            [item.type, item.title, item.description, item.amount, item.is_recurrent, item.recurrency, item.date ],
             (err, data) => {
                 if (err) return rej(err);
                 acc({
@@ -96,11 +97,15 @@ async function addIncomeExpense(item) {
 }
 
 async function addAssetLiability(item) {
+
+    item.transaction_date = Date.parse(item.transaction_date);
+    item.date = Number(item.transaction_date.toString());
+
     return new Promise((acc, rej) => {
         item.transaction_date = new Date()
         db.run(
-            `INSERT INTO asset_liability (type, title, description, amount, change_rate, change_duration) VALUES (?, ?, ?, ?, ?, ?)`,
-            [item.type, item.title, item.description],
+            `INSERT INTO asset_liability (type, title, description, amount, change_rate, change_duration, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [item.type, item.title, item.description, item.amount,item.change_rate, item.change_duration, item.date],
             (err, data) => {
                 if (err) return rej(err);
                 acc({
@@ -148,26 +153,38 @@ async function removeItem(id) {
 
 async function getFinancialStatement(dataObject){
     console.log(dataObject, "obj")
-    const from = Date.parse(dataObject.from); console.log(from, 'from');
+    const from = Date.parse(dataObject.from); 
+    //console.log(from, 'from');
+    //console.log(new Date(from), 'reverse')
     const to = Date.parse(dataObject.to);
     return new Promise((acc,rej)=>{
         const income_expenses = new Promise((resolve,reject)=>{
-            db.all(`SELECT * FROM income_expense WHERE transaction_date > ${from}`, (err, data)=>{
+            db.all(`SELECT * FROM income_expense WHERE transaction_date >= ${from} and transaction_date <= ${to}`, (err, data)=>{
                 if(err) reject(err)
                 else {console.log(JSON.stringify(data), 'data1');resolve(data)}
             })
         })
 
         const asset_liabilities = new Promise((resolve,reject)=>{
-            db.all(`SELECT * FROM asset_liability WHERE transaction_date BETWEEN '${dataObject.from}' AND '${dataObject.to}'`, (err, data)=>{
+            db.all(`SELECT * FROM asset_liability WHERE transaction_date >= ${from} and transaction_date <= ${to}`, (err, data)=>{
                 if(err) reject(err)
                 else {console.log(data, 'data2');resolve(data)}
             })
         })
         
         Promise.allSettled([income_expenses, asset_liabilities])
-        .then(results=>console.log(results[1].value,'after'))
-        .catch(error=>console.log(error, 'error'))
+        .then(results=>{
+            acc({
+                isSuccessful: true,
+                income_expenses: results[0].value,
+                asset_liabilities: results[1].value
+            })
+        })
+        .catch(error=>{
+            acc({
+                isSuccessful: false
+            })
+        })
     })
 }
 
