@@ -5,3 +5,24 @@
 .label{
     display: block;
 }
+.fs_content{
+    width: 200%;
+    padding: 20px 10%;
+    margin-top: 20px; 
+}
+.fs_tab{
+    border-collapse: collapse;
+    width: 100%;
+}
+.fs_tab th, .fs_tab td{
+    padding: 5px;
+    text-align: center ;
+}
+.fs_tab th{
+    background-color: #d9d9d9;
+}
+.draw td{
+    background-color: #f2f2f2;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
