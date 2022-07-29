@@ -83,8 +83,8 @@ async function addIncomeExpense(item) {
     return new Promise((acc, rej) => {
         item.transaction_date = new Date()
         db.run(
-            `INSERT INTO income_expense (type, title, description, amount, is_recurrent, recurrency, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [item.type, item.title, item.description, item.amount, item.is_recurrent, item.recurrency, item.date ],
+            `INSERT INTO income_expense (type, title, description, amount, transaction_date) VALUES (?, ?, ?, ?, ?)`,
+            [item.type, item.title, item.description, item.amount, item.date ],
             (err, data) => {
                 if (err) return rej(err);
                 acc({
@@ -104,8 +104,8 @@ async function addAssetLiability(item) {
     return new Promise((acc, rej) => {
         item.transaction_date = new Date()
         db.run(
-            `INSERT INTO asset_liability (type, title, description, amount, change_rate, change_duration, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [item.type, item.title, item.description, item.amount,item.change_rate, item.change_duration, item.date],
+            `INSERT INTO asset_liability (type, title, description, amount, transaction_date) VALUES (?, ?, ?, ?, ?)`,
+            [item.type, item.title, item.description, item.amount, item.date],
             (err, data) => {
                 if (err) return rej(err);
                 acc({
