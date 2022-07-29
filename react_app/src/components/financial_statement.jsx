@@ -6,7 +6,6 @@ const FinancialStatement = ()=>{
     const [incomeExpense, setIncomeExpense] = useState({});
     const [assetLiabilty, setAssetLiability] = useState({});
     const [incomeYear, setIncomeYear] = useState({});
-    const [assetYear, setAssetYear] = useState({});
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
 
@@ -16,7 +15,17 @@ const FinancialStatement = ()=>{
             from, to
         })
         .then(result=>{
-            console.log(result, 'result');
+            //Re arrange data for easy display
+            /*
+            Data(income, asset, liabilities, expenses) are arranged in this format:
+             E.g for income
+              income: {
+                  'income_title': {
+                      'income_year': income_amount
+                  }
+              }
+              The others follows suit
+             */
             const income = {}; const expenses = {};
             const incomeYear = {}
             result.income_expenses.forEach((value)=>{

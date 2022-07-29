@@ -10,7 +10,6 @@ const Navbar = ()=>{
                 <li onClick={()=>setSelected(1)} className={selected==1? navbar_style.highlight: ``}><Link to="/">Income/Expenses</Link></li>
                 <li onClick={()=>setSelected(2)} className={selected==2? navbar_style.highlight: ``}><Link to="asset-liability">Assets/Liabilities</Link></li>
                 <li onClick={()=>setSelected(3)} className={selected==3? navbar_style.highlight: ``}><Link to="/financial-statement">Financial Statement</Link></li>
-                <li onClick={()=>setSelected(4)} className={selected==4? navbar_style.highlight: ``}><Link to="/settings">Settings</Link></li>
             </ul>
         </div>
     )
