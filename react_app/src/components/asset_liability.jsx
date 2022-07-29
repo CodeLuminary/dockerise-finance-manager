@@ -8,8 +8,6 @@ const AssetLiability = ()=>{
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [rate, setRate] = useState(0.0);
     const [datetime, setDateTime] = useState('');
 
     const HandleSubmit = (e)=>{
@@ -19,8 +17,6 @@ const AssetLiability = ()=>{
             title,
             description,
             amount,
-            change_duration: duration,
-            change_rate: rate,
             transaction_date: datetime
         })
     }
@@ -29,10 +25,7 @@ const AssetLiability = ()=>{
         <form onSubmit={HandleSubmit}>
             <h2>INCOME/EXPENSE</h2>
             <span className={inc_exp_style.label}>Type</span>
-            <select className="input" onChange={e=> {
-                    setPropType(e.target.value);
-                    setTypeRate(e.target.value=="asset"? 'Appreciation': 'Depreciation')
-                }}>
+            <select className="input">
                 <option value="asset">Asset</option>
                 <option value="liability">Liability</option>
             </select><br/>
@@ -44,11 +37,7 @@ const AssetLiability = ()=>{
             <input type="text" onChange={e=>setAmount(Number(e.target.value))} className="input" placeholder="Enter amount"/><br/>
             <span className={inc_exp_style.label}>Date/Time</span>
             <input  type="date" onChange={e=>setDateTime(e.target.value)} className="input" />
-            <span className={inc_exp_style.label}>{typeRate} Duration(in month)</span>
-            <input type="number" onChange={e=>setDuration(Number(e.target.value))} value="1" className="input"/><br/>
-            <span className={inc_exp_style.label}>{typeRate} Rate</span>
-            <input type="text" onChange={e=>setRate(Number(e.target.value))} placeholder={`Enter rate of ${typeRate} e.g 5 for 5 USD/ month`} className="input"/><br/>
-            
+           
             <input type="submit" className="btn" value="Save"/>
         </form>
     )

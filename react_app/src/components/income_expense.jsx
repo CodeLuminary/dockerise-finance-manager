@@ -7,9 +7,7 @@ const IncomeExpense = ()=>{
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
-    const [recurrency, setRecurrency] = useState(0);
     const [datetime, setDateTime] = useState('');
-    const [isRecurrent, setIsRecurrent] = useState(false);
 
     const HandleSubmit = (e)=>{
         e.preventDefault();
@@ -18,8 +16,6 @@ const IncomeExpense = ()=>{
             title,
             description,
             amount,
-            is_recurrency: isRecurrent,
-            recurrency,
             transaction_date: datetime
         })
     }
@@ -40,12 +36,6 @@ const IncomeExpense = ()=>{
             <input onChange={e=>setAmount(Number(e.target.value))} type="text" className="input" placeholder="Enter amount"/><br/>
             <span className={inc_exp_style.label}>Date/Time</span>
             <input on type="date" onChange={e=>setDateTime(e.target.value)} className="input" />
-            <span>Is Expenditure Recurrent</span>
-            <input type="checkbox" onChange={e=>setIsRecurrent(e.target.checked)}/><br/>
-            <div>
-                <span className={inc_exp_style.label}>How Often(in month)</span>
-                <input type="number" onChange={e=>setRecurrency(Number(e.target.value))} className="input"/>
-            </div>
             <input type="submit" className="btn" value="Save"/>
         </form>
     )

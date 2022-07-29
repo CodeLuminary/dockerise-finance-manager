@@ -4,8 +4,9 @@ import {useState} from "react";
 
 const FinancialStatement = ()=>{
     const [incomeExpense, setIncomeExpense] = useState({});
-    const [assetLiabiltiy, setAssetLiability] = useState({});
+    const [assetLiabilty, setAssetLiability] = useState({});
     const [incomeYear, setIncomeYear] = useState({});
+    const [assetYear, setAssetYear] = useState({});
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
 
@@ -59,7 +60,49 @@ const FinancialStatement = ()=>{
             });
             setIncomeYear(incomeYear);
 
-            
+            //Asset Liabilities
+            const asset = {}; const liabilities = {};
+
+            result.asset_liabilities.forEach((value)=>{
+                
+                const year = new Date(value.transaction_date).getFullYear();
+                incomeYear[year] = 1;
+                if(value.type=='asset'){
+                    if(!asset[value.title]) asset[value.title] = {}
+                    asset[value.title][year] = value.amount;
+                }
+                else{
+                    if(!liabilities[value.title]) liabilities[value.title] = {}
+                    liabilities[value.title][year] = value.amount;
+                }
+
+                
+            })
+            asset['Total Assets'] = {}
+            liabilities['Total Liabilities'] = {}
+            liabilities['Retained Earning'] = {}
+            liabilities["Shareholder's Equity"] = {}
+                    
+            for(let x in incomeYear){
+                let assetTotal = 0; let liabilityTotal = 0;
+                for(let y in asset){
+                    if(asset[y][x])
+                        assetTotal += asset[y][x];
+                }
+                for(let y in liabilities){
+                    if(liabilities[y][x])
+                        liabilityTotal += liabilities[y][x];
+                }
+                asset['Total Assets'][x] = assetTotal;
+                liabilities['Total Liabilities'][x] = liabilityTotal;
+                liabilities['Retained Earning'][x] = expenses['Net Profit'][x];
+                liabilities["Shareholder's Equity"][x] = assetTotal + Number(expenses['Net Profit'][x]) - liabilityTotal;
+            }
+            console.log(income, 'income')
+            setAssetLiability({
+                ...asset,
+                ...liabilities
+            });
         })
         .catch(error=>console.log(error));
         //console.log(fs['from'])
@@ -97,6 +140,39 @@ const FinancialStatement = ()=>{
                                         {
                                             Object.keys(incomeYear).map((year,index)=>(
                                                 <td key={index}>{incomeExpense[incExp][year]? incomeExpense[incExp][year]: `-`}</td>
+                                            ))
+                                        }
+                                    </tr>
+                                ))
+                            }    
+                        </tbody>
+                    </table>
+                    </>
+                ):``          
+                }
+
+                {Object.keys(assetLiabilty).length > 0 ?
+                (   <>
+                    <h3>BALANCE SHEET</h3>
+                    <table className={inc_exp_style.fs_tab}>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {
+                                    Object.keys(incomeYear).map((year,index)=>(
+                                        <th key={index}>{year}</th>
+                                    ))
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>    
+                            {
+                                Object.keys(assetLiabilty).map((incExp, index)=>(
+                                    <tr className={incExp=='Total Assets' || incExp=='Total Liabilities'? inc_exp_style.draw: ``} key={index}>
+                                        <td>{incExp}</td>
+                                        {
+                                            Object.keys(incomeYear).map((year,index)=>(
+                                                <td key={index}>{assetLiabilty[incExp][year]? assetLiabilty[incExp][year]: `-`}</td>
                                             ))
                                         }
                                     </tr>
