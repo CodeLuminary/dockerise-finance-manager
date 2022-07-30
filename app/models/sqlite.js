@@ -161,14 +161,14 @@ async function getFinancialStatement(dataObject){
         const income_expenses = new Promise((resolve,reject)=>{
             db.all(`SELECT * FROM income_expense WHERE transaction_date >= ${from} and transaction_date <= ${to} ORDER BY type DESC`, (err, data)=>{
                 if(err) reject(err)
-                else {console.log(JSON.stringify(data), 'data1');resolve(data)}
+                else {resolve(data)}
             })
         })
 
         const asset_liabilities = new Promise((resolve,reject)=>{
             db.all(`SELECT * FROM asset_liability WHERE transaction_date >= ${from} and transaction_date <= ${to} ORDER BY type`, (err, data)=>{
                 if(err) reject(err)
-                else {console.log(data, 'data2');resolve(data)}
+                else {resolve(data)}
             })
         })
         
