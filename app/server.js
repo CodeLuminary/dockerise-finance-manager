@@ -1,6 +1,7 @@
 const express = require('express');
 //const datetime = require('node-datetime');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -33,12 +34,12 @@ app.post('/get-financial-statement',(req,res)=>{
     getFinancialStatement(req.body)
     .then(result=>res.send(result));
 })
+app.get('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public/index.html'))
+})
 
 app.all('/*',(req,res)=>{
-    res.status(404).send({
-         404: 'Not Found!'
-     })
-     //res.sendFile(path.join(__dirname,'static/error-page.html'))  
+     res.sendFile(path.join(__dirname,'index.html'))
  })
 
 const port = process.env.PORT || 5000;
